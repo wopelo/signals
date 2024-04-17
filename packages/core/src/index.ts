@@ -219,9 +219,11 @@ function addDependency(signal: Signal): Node | undefined {
 //
 // A function with the same name is defined later, so we need to ignore TypeScript's
 // warning about a redeclared variable.
+// 由于稍后定义了一个同名的函数，因此我们需要忽略 TypeScript 的关于重复声明变量的警告。
 //
 // The class is declared here, but later implemented with ES5-style prototypes.
 // This enables better control of the transpiled output size.
+// 这里声明了类，但稍后使用 ES5 风格的原型进行了实现。这样做可以更好地控制转译后输出的大小。
 declare class Signal<T = any> {
 	/** @internal */
 	_value: unknown;
@@ -230,6 +232,7 @@ declare class Signal<T = any> {
 	 * @internal
 	 * Version numbers should always be >= 0, because the special value -1 is used
 	 * by Nodes to signify potentially unused but recyclable nodes.
+	 * 版本号应该始终 >= 0，因为特殊值 -1 被节点用来表示可能未使用但可回收的节点。
 	 */
 	_version: number;
 
@@ -271,9 +274,11 @@ declare class Signal<T = any> {
 //
 // A class with the same name has already been declared, so we need to ignore
 // TypeScript's warning about a redeclared variable.
+// 由于已经声明了一个同名的类，因此我们需要忽略 TypeScript 关于重复声明变量的警告。
 //
 // The previously declared class is implemented here with ES5-style prototypes.
 // This enables better control of the transpiled output size.
+// 先前声明的类在这里使用 ES5 风格的原型进行实现。这样可以更好地控制转译后输出大小。
 function Signal(this: Signal, value?: unknown) {
 	this._value = value;
 	this._version = 0;
