@@ -12,13 +12,16 @@ const TRACKING = 1 << 5;
 
 // A linked list node used to track dependencies (sources) and dependents (targets).
 // Also used to remember the source's last version number that the target saw.
+// 用于跟踪依赖项（源）和依赖方（目标）的链表节点。
+// 也用于记住目标上次看到的源的版本号。
 type Node = {
-	// A source whose value the target depends on.
+	// A source whose value the target depends on. 一个目标所依赖的源的值。
 	_source: Signal;
 	_prevSource?: Node;
 	_nextSource?: Node;
 
 	// A target that depends on the source and should be notified when the source changes.
+	// 一个依赖于源并且在源改变时应该被通知的目标。
 	_target: Computed | Effect;
 	_prevTarget?: Node;
 	_nextTarget?: Node;
@@ -27,10 +30,15 @@ type Node = {
 	// instead of storing the source value, because source values can take arbitrary amount
 	// of memory, and computeds could hang on to them forever because they're lazily evaluated.
 	// Use the special value -1 to mark potentially unused but recyclable nodes.
+	// 目标最后一次看到的源的版本号。我们使用版本号
+	// 而不是存储源值，因为源值可以占用任意多的内存，
+	// 并且因为计算属性是懒惰评估的，它们可能会永远持有这些值。
+	// 使用特殊值 -1 来标记可能未使用但可回收的节点。
 	_version: number;
 
 	// Used to remember & roll back the source's previous `._node` value when entering &
 	// exiting a new evaluation context.
+	// 用于在进入和退出新的评估上下文时，记住并回滚源的之前的 `._node` 值。
 	_rollbackNode?: Node;
 };
 
@@ -103,7 +111,7 @@ function batch<T>(fn: () => T): T {
 	}
 }
 
-// Currently evaluated computed or effect.
+// Currently evaluated computed or effect. 当前正在求值的 computed 或者 effect
 let evalContext: Computed | Effect | undefined = undefined;
 
 /**
