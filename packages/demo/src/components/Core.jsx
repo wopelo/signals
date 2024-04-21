@@ -10,7 +10,9 @@ export default function Core() {
 
 		const fullName = computed(() => `${name.value} ${surname.value}`);
 
-		console.log(fullName);
+		console.log('name', name);
+		console.log('surname', surname);
+		console.log('fullName', fullName);
 
 		const dispose = effect(() => console.log(fullName.value));
 
