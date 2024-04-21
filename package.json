@@ -35,7 +35,6 @@
     "docs:preview": "cd docs && pnpm preview",
     "ci:build": "pnpm build && pnpm docs:build",
     "ci:test": "pnpm lint && pnpm test",
-    "prepare": "husky install",
     "format": "prettier --ignore-path .gitignore --write '**/*.{js,jsx,ts,tsx,yml,json,md}'",
     "version": "pnpm changeset version && pnpm i --lockfile-only"
   },
@@ -74,7 +73,6 @@
     "esbuild": "^0.14.54",
     "eslint": "^8.21.0",
     "eslint-config-prettier": "^8.5.0",
-    "husky": "^8.0.1",
     "karma": "6.4.2",
     "karma-chai-sinon": "^0.1.5",
     "karma-chrome-launcher": "^3.1.1",

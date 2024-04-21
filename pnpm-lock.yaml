@@ -106,9 +106,6 @@ importers:
       eslint-config-prettier:
         specifier: ^8.5.0
         version: 8.5.0(eslint@8.21.0)
-      husky:
-        specifier: ^8.0.1
-        version: 8.0.1
       karma:
         specifier: 6.4.2
         version: 6.4.2
@@ -5502,12 +5499,6 @@ packages:
   /human-signals@4.3.1:
     resolution: {integrity: sha512-nZXjEF2nbo7lIw3mgYjItAfgQXog3OjJogSbKa2CQIIvSGWcKgeJnQlNXip6NglNzYH45nSRiEVimMvYL8DDqQ==}
     engines: {node: '>=14.18.0'}
-    dev: true
-
-  /husky@8.0.1:
-    resolution: {integrity: sha512-xs7/chUH/CKdOCs7Zy0Aev9e/dKOMZf3K1Az1nar3tzlv0jfqnYtu235bstsWTmXOR0EfINrPa97yy4Lz6RiKw==}
-    engines: {node: '>=14'}
-    hasBin: true
     dev: true
 
   /iconv-lite@0.4.24:
