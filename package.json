@@ -4,7 +4,7 @@
   "scripts": {
     "prebuild": "shx rm -rf packages/*/dist/",
     "build": "pnpm build:core && pnpm build:preact && pnpm build:react-runtime && pnpm build:react-auto && pnpm build:react && pnpm build:react-transform",
-    "_build": "microbundle --raw --globals @preact/signals-core=preactSignalsCore,preact/hooks=preactHooks,@preact/signals-react/runtime=reactSignalsRuntime",
+    "_build": "microbundle --no-compress --raw --globals @preact/signals-core=preactSignalsCore,preact/hooks=preactHooks,@preact/signals-react/runtime=reactSignalsRuntime",
     "build:core": "pnpm _build --cwd packages/core && pnpm postbuild:core",
     "build:preact": "pnpm _build --cwd packages/preact && pnpm postbuild:preact",
     "build:react": "pnpm _build --cwd packages/react --external \"react,@preact/signals-react/runtime,@preact/signals-core\" && pnpm postbuild:react",
@@ -35,7 +35,6 @@
     "docs:preview": "cd docs && pnpm preview",
     "ci:build": "pnpm build && pnpm docs:build",
     "ci:test": "pnpm lint && pnpm test",
-    "prepare": "husky install",
     "format": "prettier --ignore-path .gitignore --write '**/*.{js,jsx,ts,tsx,yml,json,md}'",
     "version": "pnpm changeset version && pnpm i --lockfile-only"
   },
@@ -74,7 +73,6 @@
     "esbuild": "^0.14.54",
     "eslint": "^8.21.0",
     "eslint-config-prettier": "^8.5.0",
-    "husky": "^8.0.1",
     "karma": "6.4.2",
     "karma-chai-sinon": "^0.1.5",
     "karma-chrome-launcher": "^3.1.1",

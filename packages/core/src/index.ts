@@ -1,3 +1,11 @@
+function generateRandomDigits(length: number) {  
+	let result = '';  
+	for (let i = 0; i < length; i++) {  
+			result += Math.floor(Math.random() * 10);  
+	}  
+	return result;  
+}
+
 // An named symbol/brand for detecting Signal instances even when they weren't
 // created using the same signals library version.
 const BRAND_SYMBOL = Symbol.for("preact-signals");
@@ -40,6 +48,9 @@ type Node = {
 	// exiting a new evaluation context.
 	// 用于在进入和退出新的评估上下文时，记住并回滚源的之前的 `._node` 值。
 	_rollbackNode?: Node;
+
+	// 新增唯一标识
+	_mark?: string;
 };
 
 function startBatch() {
@@ -168,6 +179,7 @@ function addDependency(signal: Signal): Node | undefined {
 			_prevTarget: undefined,
 			_nextTarget: undefined,
 			_rollbackNode: node,
+			_mark: generateRandomDigits(5),
 		};
 
 		if (evalContext._sources !== undefined) {
