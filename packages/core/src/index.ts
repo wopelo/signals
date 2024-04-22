@@ -10,12 +10,30 @@ function generateRandomDigits(length: number) {
 // created using the same signals library version.
 const BRAND_SYMBOL = Symbol.for("preact-signals");
 
-// Flags for Computed and Effect.
+// Flags for Computed and Effect. 用于表示 Computed 和 Effect 状态的标志
+/**
+ * 运行中：表示 Computed 或 Effect 正在执行中。
+ */
 const RUNNING = 1 << 0;
+/**
+ * 已通知：表示 Computed 或 Effect 已经被通知有依赖的信号变化。
+ */
 const NOTIFIED = 1 << 1;
+/**
+ * 过时的：表示 Computed 的值或 Effect 需要被重新计算或执行，因为它依赖的信号已经变化。
+ */
 const OUTDATED = 1 << 2;
+/**
+ * 已处置：表示 Computed 或 Effect 已经被处置，不再响应信号变化。
+ */
 const DISPOSED = 1 << 3;
+/**
+ * 有错误：表示在执行 Computed 或 Effect 时发生了错误。
+ */
 const HAS_ERROR = 1 << 4;
+/**
+ * 跟踪中：表示 Computed 或 Effect 正在跟踪其依赖的信号，用于确定哪些信号的变化会触发重新计算或执行。
+ */
 const TRACKING = 1 << 5;
 
 // A linked list node used to track dependencies (sources) and dependents (targets).
@@ -53,6 +71,9 @@ type Node = {
 	_mark?: string;
 };
 
+/**
+ * 将 batchDepth 加 1
+ */
 function startBatch() {
 	batchDepth++;
 }
@@ -152,13 +173,14 @@ let batchIteration = 0;
 let globalVersion = 0;
 
 function addDependency(signal: Signal): Node | undefined {
-	if (evalContext === undefined) {
+	if (evalContext === undefined) { // evalContext 即当前正在执行的 Computed 或者 Effect
 		return undefined;
 	}
 
 	let node = signal._node;
 	if (node === undefined || node._target !== evalContext) {
 		/**
+     * 走到这个 if 中说明当前 signal 是一个新的依赖项。创建一个新的依赖关系节点，并将其插入到依赖链表的尾部
 		 * `signal` is a new dependency. Create a new dependency node, and set it
 		 * as the tail of the current context's dependency list. e.g:
 		 *
@@ -190,6 +212,7 @@ function addDependency(signal: Signal): Node | undefined {
 
 		// Subscribe to change notifications from this dependency if we're in an effect
 		// OR evaluating a computed signal that in turn has subscribers.
+    // 订阅 signal 的变更
 		if (evalContext._flags & TRACKING) {
 			signal._subscribe(node);
 		}
@@ -201,7 +224,8 @@ function addDependency(signal: Signal): Node | undefined {
 		/**
 		 * If `node` is not already the current tail of the dependency list (i.e.
 		 * there is a next node in the list), then make the `node` the new tail. e.g:
-		 *
+		 *如果 node 还不是依赖项列表的当前尾部（即列表中有下一个节点），则使 node 成为新的尾部。
+     * 
 		 * { A <-> B <-> C <-> D }
 		 *         ↑           ↑
 		 *        node   ┌─── tail (evalContext._sources)
@@ -212,6 +236,7 @@ function addDependency(signal: Signal): Node | undefined {
 		 *                    tail (evalContext._sources)
 		 */
 		if (node._nextSource !== undefined) {
+      // 这里其实就是把当前 node 插入到链表尾部
 			node._nextSource._prevSource = node._prevSource;
 
 			if (node._prevSource !== undefined) {
@@ -448,9 +473,9 @@ function needsToRecompute(target: Computed | Effect): boolean {
 
 function prepareSources(target: Computed | Effect) {
 	/**
-	 * 1. Mark all current sources as re-usable nodes (version: -1)
-	 * 2. Set a rollback node if the current node is being used in a different context
-	 * 3. Point 'target._sources' to the tail of the doubly-linked list, e.g:
+	 * 1. Mark all current sources as re-usable nodes (version: -1) 将所有当前源标记为可重用节点（版本：-1）
+	 * 2. Set a rollback node if the current node is being used in a different context 如果当前节点正在不同的上下文中使用，则设置回滚节点
+	 * 3. Point 'target._sources' to the tail of the doubly-linked list, 指向 target._source 到双链接列表的尾部 e.g:
 	 *
 	 *    { undefined <- A <-> B <-> C -> undefined }
 	 *                   ↑           ↑
@@ -556,7 +581,7 @@ function Computed(this: Computed, fn: () => unknown) {
 Computed.prototype = new Signal() as Computed;
 
 Computed.prototype._refresh = function () {
-	this._flags &= ~NOTIFIED;
+	this._flags &= ~NOTIFIED; // 清除标记
 
 	if (this._flags & RUNNING) {
 		return false;
@@ -610,10 +635,11 @@ Computed.prototype._refresh = function () {
 
 Computed.prototype._subscribe = function (node) {
 	if (this._targets === undefined) {
-		this._flags |= OUTDATED | TRACKING;
+		this._flags |= OUTDATED | TRACKING; // 同时设置两个标记位
 
 		// A computed signal subscribes lazily to its dependencies when it
 		// gets its first subscriber.
+    // 当一个 computed signal 得到它的第一个订阅者时，它会惰性地订阅它的依赖项。
 		for (
 			let node = this._sources;
 			node !== undefined;
@@ -697,6 +723,9 @@ function computed<T>(fn: () => T): ReadonlySignal<T> {
 	return new Computed(fn);
 }
 
+/**
+ * 执行 effect._cleanup
+ */
 function cleanupEffect(effect: Effect) {
 	const cleanup = effect._cleanup;
 	effect._cleanup = undefined;
@@ -774,13 +803,18 @@ function Effect(this: Effect, fn: EffectFn) {
 	this._flags = TRACKING;
 }
 
+/**
+ * 工作：
+ * 1.执行 effect 的回调函数;
+ * 2.Effect._cleanup 指向清除函数;
+ */
 Effect.prototype._callback = function () {
-	const finish = this._start();
+	const finish = this._start(); // 
 	try {
 		if (this._flags & DISPOSED) return;
 		if (this._fn === undefined) return;
 
-		const cleanup = this._fn();
+		const cleanup = this._fn(); // 执行 effect 的回调函数
 		if (typeof cleanup === "function") {
 			this._cleanup = cleanup;
 		}
@@ -789,16 +823,24 @@ Effect.prototype._callback = function () {
 	}
 };
 
+/**
+ * 在执行 effect 回调函数前的前置工作，包括：
+ * 1.标记当前 Effect 状态
+ * 2.设置 evalContext 指向
+ * 
+ * @returns 一个 effect 执行完毕时调用的清理函数
+ */
 Effect.prototype._start = function () {
-	if (this._flags & RUNNING) {
+	if (this._flags & RUNNING) { // Effect 已经在执行，则可能存在循环依赖
 		throw new Error("Cycle detected");
 	}
-	this._flags |= RUNNING;
-	this._flags &= ~DISPOSED;
+	this._flags |= RUNNING; // 标记当前 Effect 正在运行
+	this._flags &= ~DISPOSED; // 移除已处置标志
 	cleanupEffect(this);
 	prepareSources(this);
 
 	/*@__INLINE__**/ startBatch();
+  // 将 evalContext 指向当前 effect，并在 effect 执行完毕后还原 evalContext。
 	const prevContext = evalContext;
 	evalContext = this;
 	return endEffect.bind(this, prevContext);
