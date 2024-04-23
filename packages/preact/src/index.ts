@@ -125,7 +125,10 @@ Object.defineProperties(Signal.prototype, {
 	__b: { configurable: true, value: 1 },
 });
 
-/** Inject low-level property/attribute bindings for Signals into Preact's diff */
+/** 
+ * Inject low-level property/attribute bindings for Signals into Preact's diff 
+ * 在Preact的DIFF阶段注入低级属性/属性绑定，用于处理Signal实例
+ */
 hook(OptionsTypes.DIFF, (old, vnode) => {
 	if (typeof vnode.type === "string") {
 		let signalProps: Record<string, any> | undefined;
@@ -146,7 +149,10 @@ hook(OptionsTypes.DIFF, (old, vnode) => {
 	old(vnode);
 });
 
-/** Set up Updater before rendering a component */
+/**
+ * Set up Updater before rendering a component
+ * 在Preact组件渲染之前设置一个更新器（Updater）
+ */
 hook(OptionsTypes.RENDER, (old, vnode) => {
 	setCurrentUpdater();
 

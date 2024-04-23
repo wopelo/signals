@@ -1,13 +1,15 @@
-// import Home from './components/Home'
-import Core from "./components/Core";
+import DemoA from "./components/DemoA";
+import DemoB from "./components/DemoB";
+import DemoC from "./components/DemoC";
 
 import "./app.css";
 
 export function App() {
 	return (
 		<>
-			{/* <Home /> */}
-			<Core />
+			{/* <DemoA /> */}
+      <DemoB />
+      {/* <DemoC /> */}
 		</>
 	);
 }

@@ -10,7 +10,8 @@
   },
   "dependencies": {
     "preact": "^10.19.6",
-    "@preact/signals-core": "workspace:^1.6.0"
+    "@preact/signals-core": "workspace:^1.6.0",
+    "@preact/signals": "workspace:^1.2.3"
   },
   "devDependencies": {
     "@preact/preset-vite": "^2.8.2",
