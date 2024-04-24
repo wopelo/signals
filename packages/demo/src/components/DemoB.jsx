@@ -1,20 +1,13 @@
-import { signal, computed } from "@preact/signals";
+import { signal, effect } from "@preact/signals";
 
-const count = signal(1);
-const completed = computed(() => count.value * 10 );
+const count = signal(0);
+
+effect(() => console.log(count + 1));
+effect(() => console.log(count + 2));
+effect(() => console.log(count + 3));
+
+console.log(count)
 
 export default function DemoB() {
-  console.log(count);
-  console.log(completed);
-  
-  return (
-    <div>
-      <p>Count: {completed.value}</p>
-      <button onClick={() => count.value++}>click me</button>
-    </div>
-  );
+  return <></>
 }
-
-/**
- * Signal <-> NodeA <-> Computed <-> NodeB <-> Effect
- */

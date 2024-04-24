@@ -6,10 +6,12 @@ const job = signal("worker");
 
 effect(() => console.log(`${name.value} ${surname.value} is a ${job.value}`));
 
-console.log(name);
-console.log(surname);
-console.log(job);
-
-export default function DemoA() {
-  return <></>
+export default function DemoD() {
+  console.log(name);
+  console.log(surname);
+  console.log(job);
+  
+  return (
+    <div></div>
+  );
 }
