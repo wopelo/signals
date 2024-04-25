@@ -1,3 +1,4 @@
+// 1个Signal + 多个 Effect
 import { signal, effect } from "@preact/signals";
 
 const count = signal(0);

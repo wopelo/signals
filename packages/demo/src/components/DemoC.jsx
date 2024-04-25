@@ -1,25 +1,17 @@
-import { signal, computed } from "@preact/signals";
+// 多个Signal + 多个 Effect
+import { signal, effect } from "@preact/signals";
 
 const name = signal("Jane");
 const surname = signal("Doe");
-const fullName = computed(() => `${name.value} ${surname.value}`);
+const count = signal(0);
+
+effect(() => console.log(`${name.value} ${surname.value}`)); // EffectA
+effect(() => console.log(`${name.value} is No.${count.value}`)); // EffectB
+
+console.log(name);
+console.log(surname);
+console.log(count);
 
 export default function DemoC() {
-  console.log(name);
-  console.log(surname);
-  console.log(fullName);
-  
-  return (
-    <div>
-      <p>fullName: {fullName.value}</p>
-    </div>
-  );
+  return <></>
 }
-
-/**
- * Signal(name)    <-> NodeA <-> Computed <-> NodeB <-> Effect
- *                      ^           ^
- *                      |           |
- *                      v           |
- * Siganl(surname) <-> NodeC ------->
- */

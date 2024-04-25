@@ -1,3 +1,4 @@
+// 多个 Signal + 1个 Effect
 import { signal, effect } from "@preact/signals";
 
 const name = signal("Jane");
