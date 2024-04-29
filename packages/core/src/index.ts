@@ -588,9 +588,9 @@ Computed.prototype._refresh = function () {
 		return false;
 	}
 
-	// If this computed signal has subscribed to updates from its dependencies
-	// (TRACKING flag set) and none of them have notified about changes (OUTDATED
-	// flag not set), then the computed value can't have changed.
+	// If this computed signal has subscribed to updates from its dependencies 如果这个计算信号已经订阅了其依赖项的更新（设置了 TRACKING 标志）
+	// (TRACKING flag set) and none of them have notified about changes (OUTDATED /并且它们中没有任何一个通知过变化（没有设置 OUTDATED 标志），
+	// flag not set), then the computed value can't have changed. 那么计算得到的值就不可能发生变化。
 	if ((this._flags & (OUTDATED | TRACKING)) === TRACKING) {
 		return true;
 	}
@@ -601,8 +601,8 @@ Computed.prototype._refresh = function () {
 	}
 	this._globalVersion = globalVersion;
 
-	// Mark this computed signal running before checking the dependencies for value
-	// changes, so that the RUNNING flag can be used to notice cyclical dependencies.
+	// Mark this computed signal running before checking the dependencies for value 在检查依赖项的值变化之前，标记这个计算信号为正在运行，
+	// changes, so that the RUNNING flag can be used to notice cyclical dependencies. 以便使用 RUNNING 标志来识别循环依赖。
 	this._flags |= RUNNING;
 	if (this._version > 0 && !needsToRecompute(this)) {
 		this._flags &= ~RUNNING;
