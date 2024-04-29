@@ -121,12 +121,13 @@ function endBatch() {
 
 /**
  * Combine multiple value updates into one "commit" at the end of the provided callback.
- *
+ * 将多个值更新合并到提供的回调函数结束时的一个“提交”中。
  * Batches can be nested and changes are only flushed once the outermost batch callback
  * completes.
- *
+ * 批处理可以嵌套，并且只有在最外层的批处理回调完成后，更改才会被刷新。
  * Accessing a signal that has been modified within a batch will reflect its updated
  * value.
+ * 在批处理中修改了信号后，访问该信号将反映其更新的值。
  *
  * @param fn The callback function.
  * @returns The value returned by the callback.
@@ -674,7 +675,7 @@ Computed.prototype._unsubscribe = function (node) {
 
 Computed.prototype._notify = function () {
 	if (!(this._flags & NOTIFIED)) {
-		this._flags |= OUTDATED | NOTIFIED;
+		this._flags |= OUTDATED | NOTIFIED; // 将OUTDATED 和 NOTIFIED 对应的位设置为 1，表示对象现在既过时又已通知
 
 		for (
 			let node = this._targets;
