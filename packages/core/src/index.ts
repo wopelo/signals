@@ -173,14 +173,24 @@ let batchIteration = 0;
 let globalVersion = 0;
 
 function addDependency(signal: Signal): Node | undefined {
+	console.log('addDependency signal', signal)
+	console.log('addDependency evalContext', evalContext)
+
 	if (evalContext === undefined) { // evalContext 即当前正在执行的 Computed 或者 Effect
 		return undefined;
 	}
 
 	let node = signal._node;
+
+	console.log('addDependency node', node)
+
 	if (node === undefined || node._target !== evalContext) {
+		// 如果 node 不存在，证明当前 Signal 不在依赖链表中
+		// 如果 node._target 不是当前 evalContext，说明有新的  Computed 或者 Effect 依赖了该 Signal
+		console.log('addDependency if 分支', node === undefined, node?._target !== evalContext)
+		
 		/**
-     * 走到这个 if 中说明当前 signal 是一个新的依赖项。创建一个新的依赖关系节点，并将其插入到依赖链表的尾部
+     * 当前 signal 是一个新的依赖项。创建一个新的依赖关系节点，并将其插入到依赖链表的尾部
 		 * `signal` is a new dependency. Create a new dependency node, and set it
 		 * as the tail of the current context's dependency list. e.g:
 		 *
@@ -204,20 +214,28 @@ function addDependency(signal: Signal): Node | undefined {
 			_mark: generateRandomDigits(5),
 		};
 
+		console.log('addDependency create node', node)
+
 		if (evalContext._sources !== undefined) {
+			console.log('addDependency evalContext._sources !== undefined')
 			evalContext._sources._nextSource = node;
 		}
-		evalContext._sources = node;
-		signal._node = node;
+		evalContext._sources = node; // evalContext 依赖于该 node
+		signal._node = node; // cleanupSources 会设置 _node
+
+		console.log('addDependency signal._node = node')
 
 		// Subscribe to change notifications from this dependency if we're in an effect
 		// OR evaluating a computed signal that in turn has subscribers.
     // 订阅 signal 的变更
-		if (evalContext._flags & TRACKING) {
+		if (evalContext._flags & TRACKING) { // Effect 命中
+			console.log('addDependency signal._subscribe')
 			signal._subscribe(node);
 		}
 		return node;
 	} else if (node._version === -1) {
+		console.log('addDependency else 分支')
+
 		// `signal` is an existing dependency from a previous evaluation. Reuse it.
 		node._version = 0;
 
