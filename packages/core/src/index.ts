@@ -121,12 +121,13 @@ function endBatch() {
 
 /**
  * Combine multiple value updates into one "commit" at the end of the provided callback.
- *
+ * 将多个值更新合并到提供的回调函数结束时的一个“提交”中。
  * Batches can be nested and changes are only flushed once the outermost batch callback
  * completes.
- *
+ * 批处理可以嵌套，并且只有在最外层的批处理回调完成后，更改才会被刷新。
  * Accessing a signal that has been modified within a batch will reflect its updated
  * value.
+ * 在批处理中修改了信号后，访问该信号将反映其更新的值。
  *
  * @param fn The callback function.
  * @returns The value returned by the callback.
@@ -605,9 +606,9 @@ Computed.prototype._refresh = function () {
 		return false;
 	}
 
-	// If this computed signal has subscribed to updates from its dependencies
-	// (TRACKING flag set) and none of them have notified about changes (OUTDATED
-	// flag not set), then the computed value can't have changed.
+	// If this computed signal has subscribed to updates from its dependencies 如果这个计算信号已经订阅了其依赖项的更新（设置了 TRACKING 标志）
+	// (TRACKING flag set) and none of them have notified about changes (OUTDATED /并且它们中没有任何一个通知过变化（没有设置 OUTDATED 标志），
+	// flag not set), then the computed value can't have changed. 那么计算得到的值就不可能发生变化。
 	if ((this._flags & (OUTDATED | TRACKING)) === TRACKING) {
 		return true;
 	}
@@ -618,8 +619,8 @@ Computed.prototype._refresh = function () {
 	}
 	this._globalVersion = globalVersion;
 
-	// Mark this computed signal running before checking the dependencies for value
-	// changes, so that the RUNNING flag can be used to notice cyclical dependencies.
+	// Mark this computed signal running before checking the dependencies for value 在检查依赖项的值变化之前，标记这个计算信号为正在运行，
+	// changes, so that the RUNNING flag can be used to notice cyclical dependencies. 以便使用 RUNNING 标志来识别循环依赖。
 	this._flags |= RUNNING;
 	if (this._version > 0 && !needsToRecompute(this)) {
 		this._flags &= ~RUNNING;
@@ -692,7 +693,7 @@ Computed.prototype._unsubscribe = function (node) {
 
 Computed.prototype._notify = function () {
 	if (!(this._flags & NOTIFIED)) {
-		this._flags |= OUTDATED | NOTIFIED;
+		this._flags |= OUTDATED | NOTIFIED; // 将OUTDATED 和 NOTIFIED 对应的位设置为 1，表示对象现在既过时又已通知
 
 		for (
 			let node = this._targets;
